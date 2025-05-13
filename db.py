@@ -22,7 +22,8 @@ def create_database():
         menu TEXT,
         description TEXT,
         theme TEXT,
-        review_summary TEXT
+        review_summary TEXT,
+        title_image_url TEXT
     )
     ''')
     
@@ -42,7 +43,7 @@ def create_database():
     print("Database 'bab.db' created successfully with tables 'restaurants' and 'reviews'.")
 
 def save_restaurant(place_id, name=None, address=None, business_hours=None, 
-                   phone=None, menu=None, description=None, theme=None, review_summary=None, line_num=None):
+                   phone=None, menu=None, description=None, theme=None, review_summary=None, title_image_url=None, line_num=None):
     conn = sqlite3.connect('bab.db')
     cursor = conn.cursor()
     
@@ -62,16 +63,17 @@ def save_restaurant(place_id, name=None, address=None, business_hours=None,
             description = COALESCE(?, description),
             theme = COALESCE(?, theme),
             review_summary = COALESCE(?, review_summary),
+            title_image_url = COALESCE(?, title_image_url),
             line_num = COALESCE(?, line_num)
         WHERE place_id = ?
-        ''', (name, address, business_hours, phone, menu, description, theme, review_summary, line_num, place_id))
+        ''', (name, address, business_hours, phone, menu, description, theme, review_summary, title_image_url, line_num, place_id))
         print(f"Updated restaurant with place_id {place_id}")
     else:
         # Insert new restaurant
         cursor.execute('''
-        INSERT INTO restaurants (place_id, name, address, business_hours, phone, menu, description, theme, review_summary, line_num)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (place_id, name or "Unknown", address, business_hours, phone, menu, description, theme, review_summary, line_num))
+        INSERT INTO restaurants (place_id, name, address, business_hours, phone, menu, description, theme, review_summary, title_image_url, line_num)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (place_id, name or "Unknown", address, business_hours, phone, menu, description, theme, review_summary, title_image_url, line_num))
         print(f"Added new restaurant with place_id {place_id}")
     
     conn.commit()
